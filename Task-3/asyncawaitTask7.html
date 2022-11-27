@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Async Await</title>
+  </head>
+  <body>
+    <script>
+      //Promise
+
+      // console.log("person1: shows ticket");
+      // console.log("person2: shows ticket");
+
+      // const promisewifebringingtickets = new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     resolve("ticket");
+      //   }, 3000);
+      // });
+
+      // const getpopcorn = promisewifebringingtickets.then((t) => {
+      //   console.log("wife: I have a tickets");
+      //   console.log("husband: We should go in");
+      //   console.log("wife: No I am hungry");
+      //   return new Promise((resolve, reject) => resolve(`${t} popcorn`));
+      // });
+
+      // const getButter = getpopcorn.then((t) => {
+      //   console.log("husband: I got some popcorn");
+      //   console.log("husband: We should go in");
+      //   console.log("wife: I need butter on my popcorn");
+      //   return new Promise((resolve, reject) => resolve(`${t} butter`));
+      // });
+
+      // const getColdDrinks = getButter.then((t) => {
+      //   console.log("husband: I got some butter on popcorn");
+      //   console.log("husband: Anything else darling");
+      //   console.log("wife: I need colddrinks also");
+      //   console.log("husband: I got some colddrinks for you");
+      //   console.log("wife: Lets go we are getting late");
+      //   console.log("husband: Thank you for the remainder");
+      //   return new Promise((resolve, reject) => resolve(`${t} colddrinks`));
+      // });
+
+      // getColdDrinks.then((t) => console.log(t));
+
+      // console.log("person4: shows ticket");
+      // console.log("person5: shows ticket");
+
+      //Async Await
+
+      // console.log("person1: shows ticket");
+      // console.log("person2: shows ticket");
+
+      // const preMovie = async () => {
+      //   const promisewifebringingtickets = new Promise((resolve, reject) => {
+      //     setTimeout(() => {
+      //       resolve("ticket");
+      //     }, 3000);
+      //   });
+
+      //   const getpopcorn = new Promise((resolve, reject) => resolve(`popcorn`));
+
+      //   const addbutter = new Promise((resolve, reject) => resolve(`butter`));
+
+      //   const getColdDrinks = new Promise((resolve, reject) =>
+      //     resolve(`colddrinks`)
+      //   );
+
+      //   let ticket = await promisewifebringingtickets;
+
+      //   console.log("wife: I have a ticket");
+      //   console.log("husband: We should go in");
+      //   console.log("wife: No I am hungry");
+
+      //   let popcorn = await getpopcorn;
+
+      //   console.log("husband: I got some popcorn");
+      //   console.log("husband: We should go in");
+      //   console.log("wife: I need butter on my popcorn");
+
+      //   let butter = await addbutter;
+
+      //   console.log("husband: I got some butter on popcorn");
+      //   console.log("husband: Anything else darling");
+      //   console.log("wife: I need colddrinks also");
+
+      //   let colddrinks = await getColdDrinks;
+
+      //   console.log("husband: I got some colddrinks for you");
+      //   console.log("wife: Lets go we are getting late");
+      //   console.log("husband: Thank you for the remainder");
+
+      //   return ticket;
+      // };
+
+      // preMovie().then((m) => console.log(`person3: shows ${m}`));
+
+      // console.log("person4: shows ticket");
+      // console.log("person5: shows ticket");
+
+      const posts = [
+        {
+          title: "Post One",
+          body: "This is Post one",
+        },
+        {
+          title: "Post Two",
+          body: "This is Post two",
+        },
+      ];
+
+      function getPosts() {
+        setTimeout(() => {
+          let output = "";
+          posts.forEach((post, index) => {
+            output += `<li>${post.title}</li>`;
+          });
+          document.body.innerHTML = output;
+        }, 1000);
+      }
+
+      function createPost(post) {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            posts.push(post);
+
+            const error = false;
+
+            if (!error) {
+              resolve();
+            } else {
+              reject("Error: Something went wrong");
+            }
+          }, 1000);
+        });
+      }
+
+      function deletePost() {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            if (posts.length > 0) {
+              resolve(posts.pop());
+            } else {
+              reject("Array is empty now");
+            }
+          }, 3000);
+        });
+      }
+
+      createPost({ title: "Post Three", body: "This is Post three" });
+      createPost({ title: "Post Four", body: "This is Post four" });
+
+      async function fun1() {
+        try {
+          const msg = await getPosts();
+          console.log(msg);
+          const msg1 = await createPost();
+          console.log(msg1);
+          const msg2 = await deletePost();
+          console.log(msg2);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+      fun1();
+    </script>
+  </body>
+</html>
