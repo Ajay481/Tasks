@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense Tracker</title>
+  </head>
+  <body>
+    <form action="#" onsubmit="saveToLocalStorage(event)">
+      <label>Choose Expense Amount</label>
+      <input id="Expense" type="number" name="Expense" />
+      <label>Description</label>
+      <input id="Description" type="text" name="Descriptions" />
+      <label>Choose a Category</label>
+      <select name="Category" id="Category">
+        <option value="Movie">Movie</option>
+        <option value="Food">Food</option>
+        <option value="Fuel">Fuel</option>
+        <option value="Travelling">Travelling</option>
+      </select>
+      <button>Add Expense</button>
+    </form>
+    <ul id="TotalExpenses"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.0/axios.min.js"></script>
+    <script>
+      function saveToLocalStorage(event) {
+        event.preventDefault();
+        const Expense = event.target.Expense.value;
+        const Description = event.target.Description.value;
+        const Category = event.target.Category.value;
+
+        const obj = {
+          Expense,
+          Description,
+          Category,
+        };
+        axios
+          .post(
+            "https://crudcrud.com/api/e1858e95f40c4a608f0cb2314de5cf83/expenseData",
+            obj
+          )
+          .then((Response) => {
+            showNewExpensesOnScreen(Response.data);
+            console.log(Response);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        axios
+          .get(
+            "https://crudcrud.com/api/e1858e95f40c4a608f0cb2314de5cf83/expenseData"
+          )
+          .then((Response) => {
+            console.log(Response);
+            for (var i = 0; i < Response.data.length; i++) {
+              showNewExpensesOnScreen(Response.data[i]);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+
+      function showNewExpensesOnScreen(expense) {
+        document.getElementById("Description").value = "";
+        document.getElementById("Expense").value = "";
+        document.getElementById("Category").value = "";
+        if (localStorage.getItem(expense.Description) !== null) {
+          removeExpensesFromScreen(expense.Description);
+        }
+
+        const parentNode = document.getElementById("TotalExpenses");
+        const childHtml = `<li id=${expense._id}> ${expense.Expense}-${expense.Description}-${expense.Category}
+                          <button onclick = deleteExpenses('${expense._id}')>Delete </button>
+                          <button onclick = editExpensesDetails('${expense.Description}','${expense.Expense}','${expense.Category}','${expense._id}')>Edit </button>
+
+                      </li> `;
+
+        parentNode.innerHTML = parentNode.innerHTML + childHtml;
+      }
+      //edit function
+
+      function editExpensesDetails(
+        Descriptions,
+        Expenseamount,
+        Category,
+        userId
+      ) {
+        document.getElementById("Description").value = Descriptions;
+        document.getElementById("Expense").value = Expense;
+        document.getElementById("Category").value = Category;
+
+        deleteExpenses(userId);
+      }
+
+      //delete function
+
+      function deleteExpenses(userId) {
+        axios
+          .delete(
+            `https://crudcrud.com/api/e1858e95f40c4a608f0cb2314de5cf83/expenseData/${userId}`
+          )
+          .then((Response) => {
+            removeExpensesFromScreen(userId);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+
+      function removeExpensesFromScreen(Descriptions) {
+        const parentNode = document.getElementById("TotalExpenses");
+        const childNodeToBeDeleted = document.getElementById(Descriptions);
+        if (childNodeToBeDeleted) {
+          parentNode.removeChild(childNodeToBeDeleted);
+        }
+      }
+    </script>
+  </body>
+</html>
